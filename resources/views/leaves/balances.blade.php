@@ -80,18 +80,19 @@
               $balances = LeaveBalance::where('employee_id', $employee->id)->get()->keyBy(function($item) {
                   return strtolower($item->leaveType->name); 
               });
-              $types = ['annual', 'sick', 'emergency', 'maternity' , 'Unpaid'];
+              
+              $types = ['Annual', 'Sick', 'Emergency', 'Maternity' , 'Unpaid'];
             @endphp
             @foreach ($types as $type)
                 @php
-                $leaveTypeId = \App\Models\LeaveType::where('name', ucfirst($type))->value('id');
-                    $balance = $balances[$type] ?? null;//
+                $leaveTypeId = \App\Models\LeaveType::where('name', $type)->value('id');
+                    $balance = $balances[strtolower($type)] ?? null;
                     $used = \App\Models\Leave::where('employee_id', $employee->id)
                         ->where('leave_type_id', $leaveTypeId) 
                         ->where('status', 'approved')  
                         ->sum('duration');
-                        $max = $balance?->leaveType->max_days_per_year ?? 1;
-                    $remaining = $max - $used;
+                    $max = $balance?->leaveType->max_days_per_year ?? 0;
+                    $remaining = $max > 0 ? ($max - $used) : 0;
                     $percent = $max > 0 ? ($used / $max) * 100 : 0;
                 @endphp
                 <td>
