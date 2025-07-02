@@ -91,13 +91,22 @@
                     $remaining = $max > 0 ? ($max - $used) : 0;
                     $percent = $max > 0 ? ($used / $max) * 100 : 0;
                 @endphp
+                {{-- @dd($used /*21*/,$max /*21*/,$remaining /*0*/) --}}
                 <td>
                   <div class="progress mb-1" style="height: 20px;">
                     <div class="progress-bar bg-success" style="width: {{ $percent }}%">
                       {{ $used }}/{{ $max }}
                     </div>
                   </div>
-                  <small class="text-muted">{{ $remaining ? $remaining . 'days remaining' : 'Not exploited' }}</small>
+                  <small class="text-muted">
+                    @if ($used == 0)
+                      Not exploited
+                    @elseif ($remaining > 0)
+                      {{ $remaining }} days remaining
+                    @else
+                      No days remaining
+                    @endif
+                  </small>
                 </td>
             @endforeach
           </tr>
