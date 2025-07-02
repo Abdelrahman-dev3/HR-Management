@@ -44,6 +44,8 @@ class LeaveController extends Controller
     public function store(Request $request)
     {
         $request->validate([
+            'leave_type_id'  => 'required',
+            'employee_id'    => 'required',
             'start_date'     => 'required|date|before_or_equal:end_date',
             'end_date'       => 'required|date|after_or_equal:start_date',
             'duration'       => 'required|integer|min:1|max:365',
